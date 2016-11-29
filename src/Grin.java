@@ -1,12 +1,12 @@
 public class Grin {
 	public static void main(String[] args){
-		String command = args[2];
-		String in = args[3];
-		String out = args[4];
+		String command = args[0];
+		String in = args[1];
+		String out = args[2];
 		if(command.equals("encode")){
-			encode(in,out);
+			GrinEncode(in,out);
 		}else if (command.equals("decode")){
-			decode(in,out);
+			GrinDecode(in,out);
 		}else{
 			System.out.printf("Enter either encode or decode");
 		}
