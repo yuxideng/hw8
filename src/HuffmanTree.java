@@ -26,12 +26,15 @@ public class HuffmanTree {
 		
 		for (Map.Entry<Short, Integer> entry : map.entrySet()) {
 			Node n = new Node(entry.getValue(), (char) (int) entry.getKey());
+			//System.out.println("Entering: " + n.getChar() + " => " + n.getVal());
 			queue.add(n);
 		}
 		
 		while (queue.size() >= 2) {
 			Node first = queue.poll();
 			Node second = queue.poll();
+			//System.out.println("1: " + first.getChar() + " => " + first.getVal());
+			//System.out.println("2: " + second.getChar() + " => " + second.getVal());
 			Node addition = new Node(first.getVal()+second.getVal(),first,second);
 			queue.add(addition);
 		}
@@ -64,13 +67,13 @@ public class HuffmanTree {
 			char c = (char) in.readBits(8);
 			String bits = map.get(c);
 			for (int i = 0; i < bits.length(); i++) {
-				out.writeBit((int) bits.charAt(i));
+				out.writeBit(((int) bits.charAt(i)) - 48);
 			}
 		}
-		String bits = map.get(256);
+		/*String bits = map.get(256);
 		for (int i = 0; i < bits.length(); i++) {
-			out.writeBit((int) bits.charAt(i));
-		}
+			out.writeBit(((int) bits.charAt(i)) - 48);
+		} */
 	}
 
 	//TODO: check out what happens with the EOF character
