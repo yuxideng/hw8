@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,26 +11,19 @@ public class HuffmanTree {
 
 	public HuffmanTree(Map<Short, Integer> map){
 		map.put((short) 256, 1);
-		
+
 		PriorityQueue<Node> queue = new PriorityQueue<Node>(new Comparator<Node>(){
 			public int compare(Node n1,Node n2){
-				//return n1.getVal() - n2.getVal();
-				if(n1.getVal() < n2.getVal()) {
-					return -1;
-				}else if(n1.getVal() > n2.getVal()){
-					return 1;
-				}else{
-					return 0;
-				}
+				return n1.getVal() - n2.getVal();
 			}
 		});
-		
+
 		for (Map.Entry<Short, Integer> entry : map.entrySet()) {
 			Node n = new Node(entry.getValue(), (char) (int) entry.getKey());
 			//System.out.println("Entering: " + n.getChar() + " => " + n.getVal());
 			queue.add(n);
 		}
-		
+
 		while (queue.size() >= 2) {
 			Node first = queue.poll();
 			Node second = queue.poll();
@@ -38,7 +32,7 @@ public class HuffmanTree {
 			Node addition = new Node(first.getVal()+second.getVal(),first,second);
 			queue.add(addition);
 		}
-		
+
 		//System.out.println(queue.poll().getVal());
 		this.root = queue.poll(); 
 	}
@@ -65,15 +59,16 @@ public class HuffmanTree {
 		map = makeHuffmanChart(this.root, "", map);
 		while(in.hasBits()){
 			char c = (char) in.readBits(8);
-			String bits = map.get(c);
+			String bits = map.get(c); //when c is 'b' bits = "00"
 			for (int i = 0; i < bits.length(); i++) {
 				out.writeBit(((int) bits.charAt(i)) - 48);
 			}
 		}
-		/*String bits = map.get(256);
+		String bits = map.get((char) 256);
 		for (int i = 0; i < bits.length(); i++) {
 			out.writeBit(((int) bits.charAt(i)) - 48);
-		} */
+		}
+
 	}
 
 	//TODO: check out what happens with the EOF character
@@ -88,11 +83,16 @@ public class HuffmanTree {
 					cur = cur.getRight();
 				}
 			}
-			out.writeBit(cur.getChar());
+
+			if ((int) cur.getChar() == 256) {
+				break;
+			} else {
+				out.writeBits( (int) cur.getChar(), 8);
+			}
 		}
 	}
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) throws IOException{
 		Map<Short, Integer> map = new HashMap<Short, Integer>();
 		map.put((short)'z', 1);
 		map.put((short)256, 1);
@@ -100,10 +100,17 @@ public class HuffmanTree {
 		map.put((short)'b', 2);
 		map.put((short)'a', 3);
 		HuffmanTree tree = new HuffmanTree(map);
-		//System.out.println(tree.root.getVal());
+		System.out.println((int) '0');
 		//System.out.println(tree.root.getLeft().getRight().getChar());
 		Map<Character, String> result = new HashMap<Character, String>();
 		makeHuffmanChart(tree.root,"", result);
-		System.out.println(result.get('b'));
+		//System.out.println(result.get('b'));
+		BitInputStream origin = new BitInputStream("/home/dengyuxi/workspace/hw8/src/origin.txt");
+		//BitOutputStream decoded = new BitOutputStream("/home/dengyuxi/workspace/hw8/src/decoded.txt");
+		BitOutputStream encoded = new BitOutputStream("/home/dengyuxi/workspace/hw8/src/encoded.txt");
+		//BitInputStream encodedIn = new BitInputStream("/home/dengyuxi/workspace/hw8/src/encoded.txt");
+		tree.encode(origin, encoded);
+		//tree.decode(encodedIn, decoded);
+	
 	}
 }
