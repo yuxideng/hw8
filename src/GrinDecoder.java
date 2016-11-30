@@ -18,5 +18,7 @@ public class GrinDecoder {
 		} else {
 			throw new IllegalArgumentException();
 		}
+		in.close();
+		out.close();
 	}
 }
