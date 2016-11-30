@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class GrinEncoder {
 
-	public Map<Short, Integer> createFrequencyMap(String file) throws IOException {
+	public static Map<Short, Integer> createFrequencyMap(String file) throws IOException {
 		BitInputStream in = new BitInputStream(file);
 		Map<Short,Integer> map = new HashMap<Short,Integer>();
 		while(in.hasBits()){
@@ -15,10 +15,11 @@ public class GrinEncoder {
 				map.put(k, 1);
 			}
 		}
+		in.close();
 		return map;
 	}
 	
-	public void encode(String infile, String outfile) throws IOException{
+	public static void encode(String infile, String outfile) throws IOException{
 		
 		Map<Short,Integer> freqMap = createFrequencyMap(infile);
 		BitInputStream in = new BitInputStream(infile);
@@ -32,5 +33,7 @@ public class GrinEncoder {
 		
 		HuffmanTree tree = new HuffmanTree(freqMap);
 		tree.encode(in, out);
+		in.close();
+		out.close();
 	}
 }
